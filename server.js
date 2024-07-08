@@ -1,9 +1,13 @@
 const express = require("express")
 const app = express()
-
-
+const dotenv = require("dotenv")
+const useRouter = require("./Route/userRoutes")
 require("dotenv").config()
 require("./Config/dbConnect")
+
+//---Use---
+app.use("app/v1/user", useRouter)
+
 
 app.post("/api/v1/user/register", (req,res)=>{
     try {
