@@ -1,65 +1,25 @@
-const express  = require("express");
-const useRouter = express.Router();
+const express = require('express');
+const { allUsers, login, register, singleUser, updateUser, deleteUser, } = require('../Controller/UserCtrl');
+const userRouter = express.Router();
 
-//register User 
-useRouter.post("/register", async (req, res) => {
-    try {
-        res.json({
-           status : "success",
-           data: "User registered successfully", 
-        });
-    } catch (error) {
-        res.json(error.message)
-    }
-});
 
-//Login User 
+//register user
+userRouter.post("/register", register);
 
-useRouter.post("/login", async (req, res) => {
-    try {
-        res.json({
-           status: "success",
-           data: "User Login successfully", 
-        });
-    } catch (error) {
-        res.json(error.message)
-    }
-});
+//login user
+userRouter.post("/login", login);
 
-//All users
-useRouter.post("/", async (req, res) => {
-    try {
-        res.json({
-           status: "success",
-           data: "All Users",
-        });
-    } catch (error) {
-        res.json(error.message)
-    }
-});
+//All user
+userRouter.get("/", allUsers);
 
-//Single User 
-useRouter.get("/profile/:id", async (req, res) => {
-    try {
-        res.json({
-           status: "success",
-           data: "Users Found Successfully",
-        });
-    } catch (error) {
-        res.json(error.message);
-    }
-});
+//single user
+userRouter.get("/profile/:id", singleUser );
 
-useRouter.delete("/profile/:id", async (req, res) => {
-    try {
-        res.json({
-           status: "success",
-           data: "Delete Users",
-        });
-    } catch (error) {
-        res.json(error.message)
-    }
-});
+//update user
+userRouter.put("/profile/:id", updateUser);
 
-module.exports = useRouter;
+//delete user
+userRouter.delete("/profile/:id", deleteUser);
 
+
+module.exports = userRouter

@@ -1,61 +1,35 @@
-const express = require("express")
-const app = express()
-const dotenv = require("dotenv")
-const useRouter = require("./Route/userRoutes")
-require("dotenv").config()
-require("./Config/dbConnect")
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+require("dotenv").config();
+require("./Config/dbConnect");
+const userRouter = require("./Route/userRoutes.js");
+const postRouter = require("./Route/postRoutes.js")
+const CommentRouter = require("./Route/commentRoutes.js");
+const CategoryRouter = require("./Route/categoryRoutes.js")
 
-//---Use---
-app.use("app/v1/user", useRouter)
 
-
-app.post("/api/v1/user/register", (req,res)=>{
-    try {
-        res.json({
-            status: "success",
-            data: "User register successfully"
-        })
-    } catch (error) {
-        res.json(error.message)
-        
+//Middleware
+app.use(express.json());
+const userAuth = {
+    isLogin: true,
+    isAdmin: false,
+};
+app.use((req,res,next) => {
+    if (userAuth.isLogin){
+        next();
+    }else{
+        return res.json({
+            msg:"invalid login credentails",
+        });
     }
 })
 
-app.post("/api/v1/user/Login", (req,res)=>{
-    try {
-        res.json({
-            status: "success",
-            data: "User Login successfully"
-        })
-    } catch (error) {
-        res.json(error.message)
-        
-    }
-})
-
-app.post("/api/v1/user/Update", (req,res)=>{
-    try {
-        res.json({
-            status: "success",
-            data: "User Updated successfully"
-        })
-    } catch (error) {
-        res.json(error.message)
-        
-    }
-})
-
-app.delete("/api/v1/user/:id", async (req, res)=> {
-    try {
-        res.json({
-            status: "success",
-            data: "User deleted successfully"
-        })
-    } catch (error) {
-        res.json(error.message)
-        
-    }
-})
+//---User--
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/post", postRouter)
+app.use("/api/v1/comment", CommentRouter )
+app.use("/api/v1/category", CategoryRouter)
 
 
 
