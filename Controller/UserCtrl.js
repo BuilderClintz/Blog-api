@@ -1,5 +1,6 @@
 const User = require("../Model/User/User")
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
+const generateToken = require("../Utils/generateToken");
 
 //Register
 const register = async (req,res) =>{
@@ -54,7 +55,13 @@ const login = async (req,res) =>{
         }
         res.json({
             status: "success",
-            data: "User login successfully"
+            data: {
+                id: userFound._id,
+                firstName: userFound.firstName,
+                email: userFound.email,
+                isAdmin: userFound.isAdmin,
+                toke: generateToken(userFound._id)
+            }
         })
     } catch (error) {
         res.json(error.message)
