@@ -1,6 +1,7 @@
 const User = require("../Model/User/User")
 const bcrypt = require("bcryptjs");
 const generateToken = require("../Utils/generateToken");
+const appErr = require("../Utils/appErr");
 
 //Register
 const register = async (req,res) =>{
@@ -30,28 +31,23 @@ const register = async (req,res) =>{
             data: user
         })
     } catch (error) {
-        res.json(error.message)
+       next(appErr(error.message));
     }
-}
+};
 
 //Login
-const login = async (req,res) =>{
+const login = async (req,res, next) =>{
     const login = {email, password} = req.body;
-
     try{
         //check if email exists
         const userFound = await User.findOne({email});
         if (!userFound) {
-            return res.json ({
-                msg: "Invalid credentials"
-            })
+            return next(appErr("Invalid credentials", 400));
         }
         //check valid password
         const isPasswordMatched = await bcrypt.compare( password, userFound.password);
         if (!isPasswordMatched){
-            return res.json({
-                msg: "Invalid credentials"
-            })
+            return next(appErr("Invalid credentials", 400))
         }
         res.json({
             status: "success",
@@ -64,19 +60,19 @@ const login = async (req,res) =>{
             }
         })
     } catch (error) {
-        res.json(error.message)
+       next(appErr(error.message))
     }
 }
 
 //All Users
-const allUsers = async (req,res) =>{
+const allUsers = async (req,res, next) =>{
     try{
         res.json({
             status: "success",
             data: "All User"
         })
     } catch (error) {
-        res.json(error.message)
+        next(appErr(error.message))
     }
 }
 
@@ -87,12 +83,12 @@ const singleUser =  async (req,res)=>{
     try {
         res.json({
             status: "success",
-            data: user
+            data: user,
         })
     } catch (error) {
-        res.json(error.message)
+       next(appErr(error.message))
     }
-}
+};
 
 //update user
 const updateUser = async (req,res)=>{

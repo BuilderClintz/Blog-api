@@ -6,7 +6,8 @@ require("./Config/dbConnect");
 const userRouter = require("./Route/userRoutes.js");
 const postRouter = require("./Route/postRoutes.js")
 const CommentRouter = require("./Route/commentRoutes.js");
-const CategoryRouter = require("./Route/categoryRoutes.js")
+const CategoryRouter = require("./Route/categoryRoutes.js");
+const globalErrHandler = require("./Middlewares/globalErrHandler.js");
 
 
 //Middleware
@@ -31,10 +32,17 @@ app.use("/api/v1/post", postRouter)
 app.use("/api/v1/comment", CommentRouter )
 app.use("/api/v1/category", CategoryRouter)
 
+//Error handlers middleware
+app.use(globalErrHandler);
 
+//404 error
+app.use ("*",(req, res) =>{
+    res.status(404).json({
+     message: `${req.originalUrl} - Route not Found`
+    });
+});
 
-
-
+//listen to server
 const PORT = process.env.PORT || 8000
 app.listen(PORT, console.log(`server is running on ${PORT}`))
 
