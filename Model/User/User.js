@@ -79,8 +79,27 @@ const userSchema = new mongoose.Schema(
     },
     {
         timestamps:true,
+        toJSON: {virtuals:true},
     }
+
+    
 );
+
+//Add Fullname 
+userSchema.virtual("fullname").get(function(){
+    return `${this.firstName} ${this.lastName}`
+})
+
+//Get initial
+userSchema.virtual("initials").get(function() {
+    return `${this.firstName[0]} ${this.lastName[0]}`
+});
+
+//ADD Postcount
+userSchema.virtual("PostCount").get(function(){
+    return this.posts.length
+})
+
 // compile the user model
 const User = mongoose.model("User", userSchema);
 module.exports = User;
