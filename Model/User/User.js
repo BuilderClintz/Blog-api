@@ -99,6 +99,22 @@ userSchema.virtual("initials").get(function() {
 userSchema.virtual("PostCount").get(function(){
     return this.posts.length
 })
+//ADD Fellowers Count
+userSchema.virtual("FollowersCounts").get(function(){
+    return this.followers.length
+})
+//Add fellowing count
+userSchema.virtual("FollowingCounts").get(function(){
+    return this.following.length
+})
+//Add Viewers count
+userSchema.virtual("ViewerCounts").get(function(){
+    return this.viewers.length
+})
+//Add Blocked count
+userSchema.virtual("BlockedCounts").get(function(){
+    return this.blocked.length
+})
 
 // compile the user model
 const User = mongoose.model("User", userSchema);
