@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Post = require("../Post/Post");
 const userSchema = new mongoose.Schema(
     {
         firstName : {
@@ -64,13 +65,13 @@ const userSchema = new mongoose.Schema(
                 ref:"user"
             }
         ],
-        plan:[
-            {
-                type: String,
-                enum : ["free","Premium","Pro"],
-                default:"Free",
-            }
-        ],
+        // plan:[
+        //     {
+        //         type: String,
+        //         enum : ["free","Premium","Pro"],
+        //         default:"Free",
+        //     }
+        // ],
         userAward : {
             type:String,
             enum:["Bronze","Silver","Gold"],
@@ -84,6 +85,27 @@ const userSchema = new mongoose.Schema(
 
     
 );
+
+userSchema.pre("findOne",async function (next){
+    //get the user id 
+    const userId = this._conditions._id;
+    //find the post created by the user 
+    const posts = await Post.find({ user: userId});
+    //get the last post created by the user 
+    const lastPost = posts[posts.length - 1];
+    
+
+    //get the last post date 
+    // const lastPostDate = new Date(lastPost.createdAt);
+    // //get the last post date in string format 
+    // const lastPostDateStr = lastPostDate.toDateString();
+    // console.log(lastPostDateStr);
+    // //add virtual to the schema
+    // userSchema.virtual("lastPostDate").get(function (){
+    //     return lastPostDateStr;
+    // });
+    // next()
+})
 
 //Add Fullname 
 userSchema.virtual("fullname").get(function(){
@@ -115,6 +137,8 @@ userSchema.virtual("ViewerCounts").get(function(){
 userSchema.virtual("BlockedCounts").get(function(){
     return this.blocked.length
 })
+
+
 
 // compile the user model
 const User = mongoose.model("User", userSchema);

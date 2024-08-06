@@ -1,15 +1,18 @@
 
 const express = require('express');
-const { allpost, AllPost, Singlepost, Allpost, Updatepost, Deletepost } = require('../Controller/PostCtrl');
-const postRouter = express.Router()
+const { allpost, AllPost, Singlepost, Allpost, Updatepost, Deletepost, createPostCtrl, SinglePost } = require('../Controller/PostCtrl');
+const postRouter = express.Router();
+const isLogin = require("../Middlewares/isLogin");
 
+//CREATE POST
+postRouter.post("/", isLogin, createPostCtrl)
 
 //All Post
 postRouter.get("/", Allpost);
 
 
 //single Post
-postRouter.get("/profile/:id", Singlepost);
+postRouter.get("/profile/:id", SinglePost);
 
 
 //update Post
@@ -19,4 +22,4 @@ postRouter.put("/profile/:id", Updatepost);
 postRouter.delete("/profile/:id", Deletepost);
 
 
-    module.exports = postRouter
+module.exports = postRouter

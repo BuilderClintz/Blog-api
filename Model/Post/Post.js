@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema(
         Category: {
             type: mongoose.Schema.Types.ObjectId,
             ref:"Category",
-            required:[true,"Post category is required"],
+           
         },
         numViews: [
             {
@@ -34,7 +34,7 @@ const postSchema = new mongoose.Schema(
                 ref:"User",
             },
         ],
-        User:{
+        user:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
             required: [true,"Please Author is required"],

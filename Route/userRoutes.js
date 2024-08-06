@@ -23,7 +23,7 @@ userRouter.post("/login", login);
 userRouter.get("/", allUsers);
 
 //single user
-userRouter.get("/profile/:id",isLogin, singleUser );
+userRouter.get("/profile",isLogin, singleUser );
 
 //update user
 userRouter.put("/profile/:id", updateUser);
