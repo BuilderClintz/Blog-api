@@ -86,7 +86,7 @@ const userSchema = new mongoose.Schema(
     
 );
 
-userSchema.pre("findOne",async function (next){
+userSchema.pre("findOne", async function (next){
     //get the user id 
     const userId = this._conditions._id;
     //find the post created by the user 
@@ -96,16 +96,93 @@ userSchema.pre("findOne",async function (next){
     
 
     //get the last post date 
-    // const lastPostDate = new Date(lastPost.createdAt);
-    // //get the last post date in string format 
-    // const lastPostDateStr = lastPostDate.toDateString();
-    // console.log(lastPostDateStr);
-    // //add virtual to the schema
-    // userSchema.virtual("lastPostDate").get(function (){
-    //     return lastPostDateStr;
-    // });
-    // next()
-})
+    const lastPostDate = new Date(lastPost?.createdAt);
+    //get the last post date in string format 
+    const lastPostDateStr = lastPostDate.toDateString();
+    console.log(lastPostDateStr);
+    //add virtual to the schema
+    userSchema.virtual("lastPostDate").get(function (){
+        return lastPostDateStr;
+    });
+    //--------check if user is inactive for 30 days 
+    //get current date 
+    const  currentDate = new Date();
+    //get the difference betweeen last post date and the current date 
+    const diff = currentDate - lastPostDate;
+
+    //get the difference between in days and return less than in days 
+    const diffInDays = diff / (1000 * 3600 * 24)
+    if (diffInDays > 30 ) {
+        // Add virtuals isInactive to the schema too check if a  user is inactive for 30 days 
+        userSchema.virtual("isInactive").get(function (){
+            return true;
+        });
+        //Find the User by ID and update 
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                isBlocked: true,
+            },
+            {
+                new: true,
+            },
+        );
+    }else {
+        userSchema.virtual("isInactive").get(function (){
+            return false;
+        });
+        //Find the user by ID and update 
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                isBlocked: false,
+            },
+            {
+                new: true,
+            }
+        );
+        //------last Active Date ------
+        //convert to days ago, for example 1 day ago 
+        const daysAgo = Math.floor(diffInDays)
+        //add virtuals lastActive in days to the schema
+        userSchema.virtual("lastActive").get(function (){
+            //check if daysAgo is less than 0 
+            if (daysAgo <= 0 ) {
+                return "Today";
+            }
+            //check if daysAgo is equal to 1
+            if (daysAgo === 1){
+                return "Yesterday";
+            }
+            //check if daysAgo is greater than 1
+            if (daysAgo > 1 ){
+                return `${daysAgo} days ago`
+            }
+        });
+        }
+    next()
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //Add Fullname 
 userSchema.virtual("fullname").get(function(){
