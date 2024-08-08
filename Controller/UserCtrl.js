@@ -1,7 +1,8 @@
-const User = require("../Model/User/User")
+
 const bcrypt = require("bcryptjs");
 const generateToken = require("../Utils/generateToken");
 const appErr = require("../Utils/appErr");
+const User = require("../Model/User/User");
 
 //Register
 const register = async (req,res) =>{
@@ -92,9 +93,23 @@ const singleUser =  async (req,res)=>{
     }
 };
 
-//update user
-const updateUser = async (req,res)=>{
+//update user email, firstname and lastname
+const updateUserCtrl = async (req,res, next )=>{
+    const {email, firstName,lastName} = req.body;
     try {
+        //Check if email
+        if (email){
+            const emailFound = await User.findOne({ email: email});
+            if (emailFound){
+                return next(appErr("Email is taken", 400));
+            }
+        }
+        //update the user 
+        const user = await User.findByIdAndUpdate(
+            req.userAuth,
+            {lastName,firstName,email},
+            {new:true, runValidators:true }
+        )
         res.json({
             status: "success",
             data: "update User"
@@ -102,7 +117,37 @@ const updateUser = async (req,res)=>{
     } catch (error) {
         res.json(error.message)
     }
-}
+};
+//update password 
+const updatePasswordCtrl = async (req,res,next) =>{
+    const { password} = req.body;
+    try{
+        //check if user is updating password
+        if (password){
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            //update user 
+            await User.findByIdAndUpdate(
+                req.userAuth,
+                {
+                    password: hashedPassword,
+                },
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            );
+            res.json({
+                status: "success",
+                data: "Password update successfully",
+            });
+        }else{
+            return next(appErr("Please Provide Password Field"));
+        }
+    } catch(error){
+        res.json(error.message)
+    }
+};
 
 //update user
 const deleteUser =  async (req,res)=>{
@@ -375,7 +420,7 @@ module.exports = {
     allUsers,
     register,
     singleUser,
-    updateUser,
+    // updateUser,
     deleteUser,
     profilePhotoUploadeCtrl,
     whoViewMyProfileCtrl,
@@ -385,4 +430,6 @@ module.exports = {
     unblockedUserCtrl,
     adminBlockUserCtrl,
     adminUnblockUserCtrl,
+    updateUserCtrl,
+    updatePasswordCtrl,
 }

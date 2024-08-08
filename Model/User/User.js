@@ -141,6 +141,7 @@ userSchema.pre("findOne", async function (next){
                 new: true,
             }
         );
+    }
         //------last Active Date ------
         //convert to days ago, for example 1 day ago 
         const daysAgo = Math.floor(diffInDays)
@@ -159,26 +160,49 @@ userSchema.pre("findOne", async function (next){
                 return `${daysAgo} days ago`
             }
         });
+        //----------------------------------
+        //Update userAward based on the number of posts 
+        //----------------------------------
+        //get the number of posts
+        const numberofPosts = posts.length;
+        //check if the number of posts is less than 10
+        if (numberofPosts < 10 ){
+            await User.findByIdAndUpdate(
+                userId,
+                {
+                    userAward: "Bronze",
+                },
+                {
+                    new:true,
+                }
+            );
+        }
+        //check if the number of posts is greater than 10 
+        if (numberofPosts > 10) {
+            await User.findByIdAndUpdate(
+                userId,
+                {
+                    userAward: "Silver",
+                },
+                {
+                    new:true,
+                }
+            );
+        }
+        //check if the number os posts is greater than 20
+        if (numberofPosts > 20 ){
+            await User.findByIdAndUpdate(
+                userId,
+                {
+                    userAward: "Gold",
+                },
+                {
+                    new: true,
+                }
+            );
         }
     next()
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -219,4 +243,5 @@ userSchema.virtual("BlockedCounts").get(function(){
 
 // compile the user model
 const User = mongoose.model("User", userSchema);
-module.exports = User;
+// module.exports = User;
+module.exports = User; 

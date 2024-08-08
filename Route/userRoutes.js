@@ -1,5 +1,5 @@
 const express = require('express');
-const { allUsers, login, register, singleUser, updateUser, deleteUser, profilePhotoUploadeCtrl, whoViewMyProfileCtrl, FollowingCtrl, unfollowCtrl, blockedUserCtrl, unblockedUserCtrl, adminBlockUserCtrl, adminUnblockUserCtrl, } = require('../Controller/UserCtrl');
+const { allUsers, login, register, singleUser, updateUser, deleteUser, profilePhotoUploadeCtrl, whoViewMyProfileCtrl, FollowingCtrl, unfollowCtrl, blockedUserCtrl, unblockedUserCtrl, adminBlockUserCtrl, adminUnblockUserCtrl, updateUserCtrl, updatePasswordCtrl, } = require('../Controller/UserCtrl');
 const isLogin = require('../Middlewares/isLogin');
 const multer = require("multer");
 const storage = require('../Config/cloudinary');
@@ -26,7 +26,11 @@ userRouter.get("/", allUsers);
 userRouter.get("/profile",isLogin, singleUser );
 
 //update user
-userRouter.put("/profile/:id", updateUser);
+userRouter.put("/profile/:id",isLogin, updateUserCtrl);
+
+//update user password
+userRouter.put("/profile/:id",isLogin, updatePasswordCtrl);
+
 
 //delete user
 userRouter.delete("/profile/:id", deleteUser);
