@@ -77,7 +77,7 @@ const allUsers = async (req,res, next) =>{
     } catch (error) {
         next(appErr(error.message))
     }
-}
+};
 
 //single User
 const singleUser =  async (req,res)=>{
@@ -159,7 +159,8 @@ const deleteUser =  async (req,res)=>{
     } catch (error) {
         res.json(error.message)
     }
-}
+};
+
 //who view user profile
 const whoViewMyProfileCtrl = async (req,res,next) => {
     try {
@@ -191,7 +192,8 @@ const whoViewMyProfileCtrl = async (req,res,next) => {
 } catch (error) {
     next(error.message, 500);
 }
-}
+};
+
 const profilePhotoUploadeCtrl = async ( req, res, next) =>{
     try {
         //1 find the user to be update
@@ -225,7 +227,7 @@ const profilePhotoUploadeCtrl = async ( req, res, next) =>{
         nexr(appErr(error.message, 500))
         
     }
-}
+};
 
 //Following 
 const FollowingCtrl = async (req, res , next) => {
@@ -263,7 +265,7 @@ const FollowingCtrl = async (req, res , next) => {
     } catch (error) {
         next(appErr(error.message));
     }
-}
+};
 //Unfollow
 const unfollowCtrl = async (req, res, next) => {
     try {
@@ -338,7 +340,7 @@ const blockedUserCtrl = async (req, res , next) => {
     } catch (error) {
         next(appErr(error.message));
     }
-}
+};
 //Unblocked
 const unblockedUserCtrl =  async (req, res, next) => {
     try {

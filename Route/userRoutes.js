@@ -26,10 +26,10 @@ userRouter.get("/", allUsers);
 userRouter.get("/profile",isLogin, singleUser );
 
 //update user
-userRouter.put("/profile/:id",isLogin, updateUserCtrl);
+userRouter.put("/profile/update",isLogin, updateUserCtrl);
 
 //update user password
-userRouter.put("/profile/:id",isLogin, updatePasswordCtrl);
+userRouter.put("/profile/update-password",isLogin, updatePasswordCtrl);
 
 
 //delete user
