@@ -341,6 +341,7 @@ const blockedUserCtrl = async (req, res , next) => {
         next(appErr(error.message));
     }
 };
+
 //Unblocked
 const unblockedUserCtrl =  async (req, res, next) => {
     try {
