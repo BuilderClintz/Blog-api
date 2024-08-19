@@ -64,7 +64,7 @@ const Updatepost= async (req,res)=>{
         res.json(error.message)
     }
 }
-
+//Delete post
 const Deletepost=  async (req,res)=>{
     try {
         res.json({

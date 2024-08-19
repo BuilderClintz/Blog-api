@@ -3,6 +3,10 @@ const bcrypt = require("bcryptjs");
 const generateToken = require("../Utils/generateToken");
 const appErr = require("../Utils/appErr");
 const User = require("../Model/User/User");
+const Post = require("../Model/Post/Post");
+const Comment = require("../Model/Comment/Comment")
+const category = require("../Model/Category/Category");
+const Category = require("../Model/Category/Category");
 
 //Register
 const register = async (req,res) =>{
@@ -158,6 +162,28 @@ const deleteUser =  async (req,res)=>{
         })
     } catch (error) {
         res.json(error.message)
+    }
+};
+
+ // Delete User 
+ const deleteUserCtrl= async(req,res,next) => {
+    try {
+        //1. Find the user to be deleted 
+        const userTodelete = await User.findByIdAndDelete(req.userAuth);
+        //2. Find all posts by the user to be deleted
+        await Post.deleteMany({user: req.userAuth});
+        //3. Delete all comments of the user 
+        await Comment.deleteMany ({ user: req.userAuth});
+        //4. Delete all categories of the user 
+        await Category.deleteMany({ user: req.userAuth })
+        //5. delete user
+        // await userTodelete.delete();
+        res.json ({
+            status: "success",
+            data: "Your account has been deleted successfully",
+        });
+    } catch (error) {
+        next (appErr(error.message));
     }
 };
 
@@ -435,4 +461,5 @@ module.exports = {
     adminUnblockUserCtrl,
     updateUserCtrl,
     updatePasswordCtrl,
+    deleteUserCtrl
 }

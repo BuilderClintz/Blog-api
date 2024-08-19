@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Post = require("../Post/Post");
+const appErr = require("../../Utils/appErr");
 const userSchema = new mongoose.Schema(
     {
         firstName : {
@@ -82,8 +83,6 @@ const userSchema = new mongoose.Schema(
         timestamps:true,
         toJSON: {virtuals:true},
     }
-
-    
 );
 
 userSchema.pre("findOne", async function (next){
@@ -203,9 +202,6 @@ userSchema.pre("findOne", async function (next){
         }
     next()
 });
-
-
-
 
 
 //Add Fullname 

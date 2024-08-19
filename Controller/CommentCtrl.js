@@ -1,52 +1,64 @@
-//All Users
-const allComments = async (req,res) =>{
+const Category = require("../Model/Category/Category")
+const appErr = require("../Utils/appErr")
+
+//Create Comment 
+const CreateCommentCtrl = async (req,res,next) =>{
+    const {post, description} = req.body;
     try{
+        const comment = await Comment.create({post,description, user: req.userAuth});
         res.json({
             status: "success",
-            data: "All User"
+            data: comment,
         })
     } catch (error) {
-        res.json(error.message)
+        next(appErr(error.message))
     }
 }
 
-//single User
-const singleComment =  async (req,res)=>{
+//single Comment 
+const singleComment =  async (req,res,next)=>{
     try {
+        const comment = await Comment.findbyId(req.params.id)
         res.json({
             status: "success",
-            data: "single User"
+            data: comment
         })
     } catch (error) {
-        res.json(error.message)
+        next(appErr(error.message))
     }
 }
 
-//update user
-const updateComment = async (req,res)=>{
+//update Comment 
+const updateComment = async (req,res,next)=>{
     try {
+        const comment = await Comment.findByIdAndUpdate(req.params.id,
+            { title },
+            {new: true, runValidators: true}
+        )
         res.json({
             status: "success",
-            data: "update User"
+            data: comment
         })
     } catch (error) {
-        res.json(error.message)
+        next(appErr(error.message))
     }
 }
 
-const deleteComment =  async (req,res)=>{
+//Delete Comment 
+const deleteComment =  async (req,res,next)=>{
     try {
+        const DeleteComment = await Comment.findByIdAndDelete(req.params.id)
         res.json({
             status: "success",
-            data: "delete User"
+            data: "All Comment Successfully Deleted"
         })
     } catch (error) {
-        res.json(error.message)
+         next(appErr(error.message))
     }
 }
 
 module.exports = {
-    allComments,
+    CreateCommentCtrl,
     singleComment,
     updateComment,
     deleteComment ,   
