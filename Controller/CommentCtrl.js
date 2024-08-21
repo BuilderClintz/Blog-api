@@ -1,4 +1,4 @@
-const Category = require("../Model/Category/Category")
+const Comment = require("../Model/Comment/Comment");
 const appErr = require("../Utils/appErr")
 
 //Create Comment 
@@ -14,14 +14,26 @@ const CreateCommentCtrl = async (req,res,next) =>{
         next(appErr(error.message))
     }
 }
+//all comment 
+const allComent = async (req, res, next)=>{
+    const comments = await Comment.find();
+    try {
+        res.json({
+            status: "success",
+            data: comments,       
+         })
+    } catch (error) {
+        next(appErr(error.message))
+    }
+}
 
 //single Comment 
 const singleComment =  async (req,res,next)=>{
     try {
-        const comment = await Comment.findbyId(req.params.id)
+        const comment = await Comment.findById(req.params.id)
         res.json({
             status: "success",
-            data: comment
+            data: comment,
         })
     } catch (error) {
         next(appErr(error.message))
@@ -30,9 +42,10 @@ const singleComment =  async (req,res,next)=>{
 
 //update Comment 
 const updateComment = async (req,res,next)=>{
+    const { post , description } = req.body; 
     try {
         const comment = await Comment.findByIdAndUpdate(req.params.id,
-            { title },
+            { post, description },
             {new: true, runValidators: true}
         )
         res.json({
@@ -47,7 +60,7 @@ const updateComment = async (req,res,next)=>{
 //Delete Comment 
 const deleteComment =  async (req,res,next)=>{
     try {
-        const DeleteComment = await Comment.findByIdAndDelete(req.params.id)
+        await Comment.findByIdAndDelete(req.params.id)
         res.json({
             status: "success",
             data: "All Comment Successfully Deleted"
@@ -58,6 +71,7 @@ const deleteComment =  async (req,res,next)=>{
 }
 
 module.exports = {
+    allComent,
     CreateCommentCtrl,
     singleComment,
     updateComment,

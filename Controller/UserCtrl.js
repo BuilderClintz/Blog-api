@@ -153,18 +153,6 @@ const updatePasswordCtrl = async (req,res,next) =>{
     }
 };
 
-//update user
-const deleteUser =  async (req,res)=>{
-    try {
-        res.json({
-            status: "success",
-            data: "delete User"
-        })
-    } catch (error) {
-        res.json(error.message)
-    }
-};
-
  // Delete User 
  const deleteUserCtrl= async(req,res,next) => {
     try {
@@ -220,6 +208,7 @@ const whoViewMyProfileCtrl = async (req,res,next) => {
 }
 };
 
+//Upload Picture controller 
 const profilePhotoUploadeCtrl = async ( req, res, next) =>{
     try {
         //1 find the user to be update
@@ -407,17 +396,20 @@ const unblockedUserCtrl =  async (req, res, next) => {
 const adminBlockUserCtrl = async (req, res, next) => {
     try {
     //find the user to be blocked
-    const userToBeBlocked = await User.findById(req.params.id);
+    const userToBeBlocked = await User.findById(req.params.id);    
+
     if (!userToBeBlocked){
     return next(appErr("User not found", 400))
     }
-    //Change the isBlocked to true
-    userToBeBlocked.isBlocked = true;
-    await userToBeBlocked.save();
-    res.json({  
-    status: "success",
-    data: "You have successfully blocked this user",
-    });
+    
+        //Change the isBlocked to true
+        userToBeBlocked.isBlocked = true;
+        await userToBeBlocked.save();    
+        res.json({  
+        status: "success",
+        data: "You have successfully blocked this user",
+    });    
+    
     } catch (error){
     next (appErr(error.message));
     }
@@ -431,7 +423,7 @@ const adminUnblockUserCtrl = async (req, res, next) => {
     if (!userToBeUnblocked){
     return next(appErr("User not found", 400))
     }
-    //Change the isBlocked to true
+    //Change the isBlocked to false
     userToBeUnblocked.isBlocked = false;
     await userToBeUnblocked.save();
     res.json({  
@@ -449,8 +441,8 @@ module.exports = {
     allUsers,
     register,
     singleUser,
-    // updateUser,
-    deleteUser,
+    //updateUser
+    //deleteUser,
     profilePhotoUploadeCtrl,
     whoViewMyProfileCtrl,
     FollowingCtrl,

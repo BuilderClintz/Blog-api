@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema(
             type: String,
             required: [true,"Post description is required"],
         },
-        Category: {
+        category: {
             type: mongoose.Schema.Types.ObjectId,
             ref:"Category",
            

@@ -8,7 +8,7 @@ const isLogin = require("../Middlewares/isLogin");
 postRouter.post("/", isLogin, createPostCtrl)
 
 //All Post
-postRouter.get("/", Allpost);
+postRouter.get("/",isLogin, Allpost);
 
 
 //single Post
