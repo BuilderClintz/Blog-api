@@ -47,6 +47,106 @@ const SinglePost = async ( req,res) =>{
       res.json(error.message)  
     }
 }
+//toggleLike
+const toggleLikesPostCtrl = async (req,res,next) =>{
+    try {
+        //Get the Post 
+        const post = await Post.findById(req.params.id);
+        //check if the user has alreadydisliked the post 
+        const isDisliked = post.dislikes.includes(req.userAuth);
+        //Check if the user has already likes the post 
+        const isLiked = post.likes.includes(req.userAuth);
+
+        if (isDisliked){
+            return next (
+                appErr("You have already disliked this post, kindly Undislike to like the post")
+            );
+        }else{
+            //if the user has already liked this post, unlike the post
+            if (isLiked){
+                post.likes = post.likes.filter(
+                    (like)=>like.toString() !== req.userAuth.toString()
+                );
+                await post.save();
+            }else {
+                //if the user has not liked the post,like the post 
+                post.likes.push(req.userAuth);
+                await post.save();
+            }
+            res.json({
+                status: "success",
+                data: post,
+            });
+        }
+    } catch (error) {
+        next(error.message)
+        
+    }
+}
+
+//toggle Dislike
+const toggleDislikesPostCtrl = async (req,res,next)=>{
+    try {
+        //Get the Post 
+        const post = await Post.findById(req.params.id);
+        //check if the user has already disliked the post 
+        const isDisliked = post.dislikes.includes(req.userAuth);
+        //check if the user has already liked the post 
+        const isLiked = post.likes.includes(req.userAuth);
+        if (isLiked){
+            return next (
+                appErr(
+                    "You have already liked this post,unlike to dislike the post", 403
+                )
+            );
+        }else {
+            //if the user has already liked this post, unlike the post 
+            if (isDisliked) {
+                post.dislikes = post.dislikes.filter(
+                    (dislike)=> dislike.toString() !== req.userAuth.toString()
+                );
+                await post.save();
+            }else{
+                //if the user has not liked the post,like the post 
+                post.dislikes.push(req.userAuth);
+                await post.save();
+            }
+            res.json({
+                status: "success",
+                data: post,
+            });
+        }
+    } catch (error) {
+        next(error.message);
+    }
+}
+
+//Post Details
+const postDetailsCtrl = async ( req, res, next) => {
+    try {
+        //find the post 
+        const post = await Post.findById(req.params.id);
+        //Number of view
+        //Check if the user viewed this post 
+        const isViewed = await post.numViews.includes(req.userAuth);
+        if (isViewed){
+            res.json({
+                status: "success",
+                data: post,
+            });
+        }else {
+            //push into numViews 
+            post.numViews.push(req.userAuth);
+            await post.save();
+            res.json({
+                status: "success",
+                data: post,
+            });
+        }
+    } catch (error) {
+       next(appErr(error.message)) 
+    }
+}
 
 //All Post (FETCH POST)
 const Allpost = async (req,res, next) =>{
@@ -97,6 +197,9 @@ const Deletepost=  async (req,res)=>{
 module.exports = {
     Allpost,
     SinglePost,
+    toggleLikesPostCtrl,
+    toggleDislikesPostCtrl,
+    postDetailsCtrl,
     Updatepost,
     Deletepost,   
     createPostCtrl,  
