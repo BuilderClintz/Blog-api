@@ -14,8 +14,13 @@ const postSchema = new mongoose.Schema(
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref:"Category",
-           
+
         },
+        comments: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"comment",
+
+        }],
         numViews: [
             {
                 type:mongoose.Schema.Types.ObjectId,

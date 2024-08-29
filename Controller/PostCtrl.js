@@ -172,8 +172,17 @@ const Allpost = async (req,res, next) =>{
 }
 
 //update user
-const Updatepost= async (req,res)=>{
+const Updatepost= async (req,res,next)=>{
+    const { title,description,category} = req.body;
     try {
+        // find the post 
+        const post = await Post.findById(req.params.id);
+        if (post.user.toString() !== req.userAuth.toString()){
+            return next (appErr("You are not allowed to upload this post", 403))
+        }
+        await Post.findByIdAndUpdate(req.params.id,
+            { title, description, category, photo: req?.file?.path}
+        )
         res.json({
             status: "success",
             data: "update User"
@@ -183,17 +192,23 @@ const Updatepost= async (req,res)=>{
     }
 }
 //Delete post
-const Deletepost=  async (req,res)=>{
+const DeletepostCtrl=  async (req,res,next)=>{
     try {
-        res.json({
-            status: "success",
-            data: "delete User"
-        })
-    } catch (error) {
-        res.json(error.message)
-    }
-}
+        //find post to delete 
+        const post = await Post.findById(req.params.id)
+        if (post.user.toString() !== req.userAuth.toString()){
+            return next(appErr("You are not allowed to delete this post"))
+        }
+            await Post.findByIdAndDelete(req.params.id);
 
+            res.json({
+                status: "success",
+                data: "Your post has been deleted successfully"
+            })
+            } catch (error) {
+                next(appErr(error.message))
+            }
+}
 module.exports = {
     Allpost,
     SinglePost,
@@ -201,6 +216,6 @@ module.exports = {
     toggleDislikesPostCtrl,
     postDetailsCtrl,
     Updatepost,
-    Deletepost,   
+    DeletepostCtrl,
     createPostCtrl,  
 }

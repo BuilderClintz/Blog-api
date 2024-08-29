@@ -1,8 +1,13 @@
 
 const express = require('express');
-const { allpost, AllPost, Singlepost, Allpost, Updatepost, Deletepost, createPostCtrl, SinglePost, toggleLikesPostCtrl, toggleDislikesPostCtrl, postDetailsCtrl } = require('../Controller/PostCtrl');
+const {  Allpost, Updatepost, createPostCtrl, SinglePost, toggleLikesPostCtrl, toggleDislikesPostCtrl, postDetailsCtrl, DeletepostCtrl } = require('../Controller/PostCtrl');
 const postRouter = express.Router();
 const isLogin = require("../Middlewares/isLogin");
+const storage = require('../Config/cloudinary');
+const multer = require('multer');
+
+//instance of multer 
+const upload = multer ({storage})
 
 //CREATE POST
 postRouter.post("/", isLogin, createPostCtrl)
@@ -23,10 +28,10 @@ postRouter.get("/dislikes/:id",isLogin,toggleDislikesPostCtrl)
 postRouter.get("/:id",isLogin, postDetailsCtrl)
 
 //update Post
-postRouter.put("/profile/:id", Updatepost);
+postRouter.put("/profile/:id",upload.single("photo"), Updatepost);
 
 //delete Post
-postRouter.delete("/profile/:id", Deletepost);
+postRouter.delete("/:id", DeletepostCtrl);
 
 
 module.exports = postRouter

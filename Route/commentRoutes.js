@@ -6,7 +6,7 @@ const CommentRouter = express.Router()
 
 
 //Create comment
-CommentRouter.post("/", isLogin, CreateCommentCtrl);
+CommentRouter.post("/:id", isLogin, CreateCommentCtrl);
 
 //single comment
 CommentRouter.get("/:id", singleComment);
