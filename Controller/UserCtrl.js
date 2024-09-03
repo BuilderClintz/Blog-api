@@ -5,7 +5,6 @@ const appErr = require("../Utils/appErr");
 const User = require("../Model/User/User");
 const Post = require("../Model/Post/Post");
 const Comment = require("../Model/Comment/Comment")
-const category = require("../Model/Category/Category");
 const Category = require("../Model/Category/Category");
 
 //Register
